@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Life</title>
+    <link rel="stylesheet" href="life.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1 id="Jarvis">Jarvis</h1>
+
+    <div id="image">
+        <div id="forms">
+            <div id="forName">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name">
+            </div>
+
+            <div id="forPassword">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password">
+            </div>
+        </div>
+    </div>
+
+    <p>This is a basic HTML file.</p>
+    <button id="start">Start</button>
+
+    <script>
+        function speak(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = "en-US";
+            speech.pitch = 1;
+            speech.rate = 1;
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Speech Recognition API setup
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        // Button to start listening
+        const startButton = document.getElementById("start");
+
+        startButton.addEventListener("click", function() {
+            speak("I am listening for your command.");
+            recognition.start(); // Start listening for voice input
+        });
+
+        // Function to tell the current time
+        function getCurrentTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedTime = `${hours % 12 || 12}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+            return formattedTime;
+        }
+
+        // Function to tell a bedtime story
+        function tellBedtimeStory() {
+            const story = `Once upon a time in a land far, far away, there was a kind and brave little fox. 
+            Every day, the fox would help all the animals in the forest by finding food and solving problems. 
+            One evening, after a long day of helping, the fox lay down under a big tree and drifted off to sleep, 
+            dreaming of new adventures in the morning. The end.`;
+            speak(story);
+        }
+
+        // Speech recognition result handler
+        recognition.onresult = function(event) {
+            const userInput = event.results[0][0].transcript.toLowerCase();
+            console.log(`You said: ${userInput}`);
+
+            // Common website commands
+            if (userInput.includes("google")) {
+                window.open("https://www.google.com", "_blank");
+                speak("Opening Google.");
+            } else if (userInput.includes("youtube")) {
+                window.open("https://www.youtube.com", "_blank");
+                speak("Going to YouTube.");
+            } else if (userInput.includes("facebook")) {
+                window.open("https://www.facebook.com", "_blank");
+                speak("Opening Facebook.");
+            } else if (userInput.includes("twitter")) {
+                window.open("https://www.twitter.com", "_blank");
+                speak("Going to Twitter.");
+            } else if (userInput.includes("instagram")) {
+                window.open("https://www.instagram.com", "_blank");
+                speak("Opening Instagram.");
+            } else if (userInput.includes("linkedin")) {
+                window.open("https://www.linkedin.com", "_blank");
+                speak("Opening LinkedIn.");
+            } else if (userInput.includes("github")) {
+                window.open("https://www.github.com", "_blank");
+                speak("Going to GitHub.");
+            } else if (userInput.includes("reddit")) {
+                window.open("https://www.reddit.com", "_blank");
+                speak("Opening Reddit.");
+            } else if (userInput.includes("wikipedia")) {
+                window.open("https://www.wikipedia.org", "_blank");
+                speak("Opening Wikipedia.");
+            } else if (userInput.includes("amazon")) {
+                window.open("https://www.amazon.com", "_blank");
+                speak("Going to Amazon.");
+            } else if (userInput.includes("netflix")) {
+                window.open("https://www.netflix.com", "_blank");
+                speak("Opening Netflix.");
+            }
+
+            // Time-related request
+            else if (userInput.includes("what time is it") || userInput.includes("tell me the time")) {
+                const time = getCurrentTime();
+                speak(`The current time is ${time}.`);
+            }
+
+            // Bedtime story request
+            else if (userInput.includes("bedtime story") || userInput.includes("tell me a story")) {
+                speak("Here's a bedtime story for you.");
+                tellBedtimeStory();
+            }
+
+            else {
+                speak("Sorry, I don't understand that command.");
+            }
+        };
+
+        // Error handling for speech recognition
+        recognition.onerror = function(event) {
+            console.error("Speech recognition error: ", event.error);
+            speak("Sorry, there was an error. Please try again.");
+        };
+    </script>
+</body>
+</html>
